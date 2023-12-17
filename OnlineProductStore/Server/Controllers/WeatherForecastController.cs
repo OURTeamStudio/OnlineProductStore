@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using OnlineProductShop.Shared;
+using OnlineProductStore.Shared;
 
-namespace OnlineProductShop.Server.Controllers
+namespace OnlineProductStore.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]

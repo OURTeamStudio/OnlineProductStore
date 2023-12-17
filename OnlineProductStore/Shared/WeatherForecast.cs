@@ -1,4 +1,4 @@
-namespace OnlineProductShop.Shared
+namespace OnlineProductStore.Shared
 {
     public class WeatherForecast
     {

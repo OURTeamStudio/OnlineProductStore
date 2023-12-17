@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\OnlineProductShop.Shared.csproj" />
+    <ProjectReference Include="..\Shared\OnlineProductStore.Shared.csproj" />
   </ItemGroup>
 
 </Project>

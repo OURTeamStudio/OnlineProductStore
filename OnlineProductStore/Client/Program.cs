@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using OnlineProductShop.Client;
+using OnlineProductStore.Client;
 
-namespace OnlineProductShop.Client
+namespace OnlineProductStore.Client
 {
     public class Program
     {

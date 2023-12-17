@@ -1,0 +1,66 @@
+﻿@inject HttpClient _httpClient
+
+<div class="row">
+    @foreach (var product in _products)
+    {
+        <div class="col-md-3">
+            <div class="card border-1 m-2 mb-2">
+                <a href="productDetails/@product.Id" style="text-decoration:none;">
+                    <div class="card-header text-center">
+                        <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <span class="text-primary">@product.Title </span>&nbsp; &nbsp;
+                            <br />
+                            <span class="text-secondary text-muted fs-6">@product.Description</span><br>
+                            <span class="text-danger" style="font-size:16px;"><i>$@product.Price</i></span>
+                        </p>
+                    </div>
+                </a>
+                <div class="card-footer bg-white">
+                    <button class="btn btn-outline-danger btn-sm">
+                        <i class="oi oi-cart fs-5"></i>
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@* <ul class="list-unstyled">
+
+    @foreach (var product in _products)
+    {
+        <li class="media my-3">
+            <div class="media-img-wrapper mr-2">
+                <a href="#">
+                    <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+                </a>
+            </div>
+            <div class="media-body">
+                <a href="#">
+                    <h4 class="mb-0">@product.Title</h4>
+                </a>
+                <p>@product.Description</p>
+                <h5 class="price">$@product.Price</h5>
+            </div>
+        </li>
+
+    }
+</ul> *@
+
+@code {
+    private List<Product> _products = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Product>>("api/product");
+
+        if (result != null)
+            _products = result;
+    }
+}
