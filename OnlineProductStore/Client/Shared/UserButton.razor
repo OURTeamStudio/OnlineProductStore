@@ -1,0 +1,27 @@
+﻿<div class="dropdown">
+    <button @onclick="OpenCloseUserMenu"
+            @onfocusout="HideUserMenu"
+            class="btn btn-secondary dropdown-toggle user-button">
+            <i class="oi oi-person"></i>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right @UserMenuStateCssClass">
+        <a href="register" class="dropdown-item">Register</a>
+    </div>
+</div>
+@code {
+    private bool _isMenuOpened = false;
+
+    private string UserMenuStateCssClass => _isMenuOpened ? "show-menu" : null;
+
+    private void OpenCloseUserMenu()
+    {
+        _isMenuOpened = !_isMenuOpened;
+    }
+
+    private async Task HideUserMenu()
+    {
+        await Task.Delay(200);
+
+        _isMenuOpened = false;
+    }
+}
