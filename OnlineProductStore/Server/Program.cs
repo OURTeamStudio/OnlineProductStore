@@ -2,6 +2,7 @@ global using OnlineProductStore.Shared;
 global using OnlineProductStore.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using OnlineProductStore.Server.Services.ProductService;
+using OnlineProductStore.Server.Services.CategoryService;
 
 namespace OnlineProductStore.Server
 {
@@ -25,6 +26,7 @@ namespace OnlineProductStore.Server
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<IProducService, ProductService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             var app = builder.Build();
 

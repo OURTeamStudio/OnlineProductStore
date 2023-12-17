@@ -23,5 +23,22 @@ namespace OnlineProductStore.Server.Controllers
 
             return Ok(products);
         }
+
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<ServiceResponse<Product>>> GetProductById(int productId)
+        {
+            var product = await _producService.GetProductByIdAsync(productId);
+
+            return Ok(product);
+        }
+
+        [HttpGet("category/{categoryUrl}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsByCategory(string categoryUrl)
+        {
+            var products = await _producService.GetProductsByCategory(categoryUrl);
+            
+            return Ok(products);
+        }
+    
     }
 }

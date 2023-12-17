@@ -1,6 +1,8 @@
 ﻿@inject IProductService _productService
 
-@if(_productService.Products == null || _productService.Products.Count == 0)
+@implements IDisposable
+
+@if (_productService.Products == null || _productService.Products.Count == 0)
 {
     <span>Loading products....</span>
 }
@@ -11,7 +13,7 @@ else
         {
             <div class="col-md-3">
                 <div class="card border-1 m-2 mb-2">
-                    <a href="productDetails/@product.Id" style="text-decoration:none;">
+                    <a href="product/@product.Id" style="text-decoration:none;">
                         <div class="card-header text-center">
                             <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
                         </div>
@@ -62,10 +64,13 @@ else
 </ul> *@
 
 @code {
-    private List<Product> _products = new List<Product>();
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await _productService.GetProducts();
+        _productService.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _productService.ProductsChanged -= StateHasChanged;
     }
 }
