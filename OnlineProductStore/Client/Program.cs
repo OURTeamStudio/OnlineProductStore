@@ -1,6 +1,9 @@
+global using OnlineProductStore.Shared;
+
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OnlineProductStore.Client;
+using OnlineProductStore.Client.Services.ProductService;
 
 namespace OnlineProductStore.Client
 {
@@ -13,6 +16,7 @@ namespace OnlineProductStore.Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             await builder.Build().RunAsync();
         }

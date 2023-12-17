@@ -1,6 +1,9 @@
 global using OnlineProductStore.Shared;
+global using OnlineProductStore.Server.Data;
+using Microsoft.EntityFrameworkCore;
+using OnlineProductStore.Server.Services.ProductService;
 
-namespace OnlineProductStore
+namespace OnlineProductStore.Server
 {
     public class Program
     {
@@ -10,11 +13,18 @@ namespace OnlineProductStore
 
             // Add services to the container.
 
+            builder.Services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<IProducService, ProductService>();
 
             var app = builder.Build();
 

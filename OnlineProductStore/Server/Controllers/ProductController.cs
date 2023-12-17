@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OnlineProductStore.Server.Services.ProductService;
 
 namespace OnlineProductStore.Server.Controllers
 {
@@ -7,62 +9,19 @@ namespace OnlineProductStore.Server.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private List<Product> _products = new List<Product>()
+        private readonly IProducService _producService;
+
+        public ProductController(IProducService producService)
         {
-            new Product()
-            {
-              Id = 0,
-              Title = "Помидори",
-              Description = "Дуже свіжі",
-              Price = 20,
-              ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
-            },
-            new Product()
-            {
-              Id = 1,
-              Title = "Огірочічки",
-              Description = "Смачно капець",
-              Price = 60,
-              ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",
-            },
-            new Product()
-            {
-              Id = 2,
-              Title = "Помидори",
-              Description = "Дуже свіжі",
-              Price = 20,
-              ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
-            },
-            new Product()
-            {
-              Id = 3,
-              Title = "Огірочічки",
-              Description = "Смачно капець",
-              Price = 60,
-              ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",
-            },
-             new Product()
-            {
-              Id = 4,
-              Title = "Помидори",
-              Description = "Дуже свіжі",
-              Price = 20,
-              ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
-            },
-            new Product()
-            {
-              Id = 5,
-              Title = "Огірочічки",
-              Description = "Смачно капець",
-              Price = 60,
-              ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",
-            },
-        };
+            _producService = producService;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts()
         {
-            return Ok(_products);
+            var products = await _producService.GetAllProductsAsync();
+
+            return Ok(products);
         }
     }
 }

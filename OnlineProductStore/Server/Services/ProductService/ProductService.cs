@@ -1,0 +1,25 @@
+﻿
+using Microsoft.EntityFrameworkCore;
+
+namespace OnlineProductStore.Server.Services.ProductService
+{
+    public class ProductService : IProducService
+    {
+        private readonly DataContext _context;
+
+        public ProductService(DataContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetAllProductsAsync()
+        {
+            var response = new ServiceResponse<List<Product>>()
+            {
+                Data = await _context.Products.ToListAsync()
+            };
+
+            return response;
+        }
+    }
+}
