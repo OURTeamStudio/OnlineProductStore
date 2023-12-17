@@ -39,6 +39,21 @@ namespace OnlineProductStore.Server.Controllers
             
             return Ok(products);
         }
-    
+
+        [HttpGet("search/{searchString}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsBySearchString(string searchString)
+        {
+            var products = await _producService.SearchProducts(searchString);
+
+            return Ok(products);
+        }
+
+        [HttpGet("search-suggestions/{searchString}")]
+        public async Task<ActionResult<ServiceResponse<List<string>>>> GetProductsSearchSuggestionsBySearchString(string searchString)
+        {
+            var products = await _producService.GetSearchSuggestions(searchString);
+
+            return Ok(products);
+        }
     }
 }

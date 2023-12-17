@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using OnlineProductStore.Shared;
 
 namespace OnlineProductStore.Server.Services.ProductService
 {
@@ -48,6 +49,38 @@ namespace OnlineProductStore.Server.Services.ProductService
             var products = await _dataContext.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower())).ToListAsync();
 
             response.Data = products;
+
+            return response;
+        }
+
+        private async Task<List<Product>> FindProductsBySearchStringAsync(string searchString)
+        {
+            return await _dataContext.Products.Where(p => p.Title.ToLower().Contains(searchString.ToLower()) ||
+                                                               p.Description.ToLower().Contains(searchString.ToLower())).ToListAsync();
+        }
+
+        public async Task<ServiceResponse<List<string>>> GetSearchSuggestions(string searchString)
+        {
+            var products = await FindProductsBySearchStringAsync(searchString);
+
+            List<string> suggestions = new List<string>();
+
+            foreach (var product in products)
+            {
+                if(product.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                {
+                    suggestions.Add(product.Title);
+                }
+            }
+
+            return new ServiceResponse<List<string>>() { Data = suggestions};
+        }
+
+        public async Task<ServiceResponse<List<Product>>> SearchProducts(string searchString)
+        {
+            var response = new ServiceResponse<List<Product>>();
+
+            response.Data = await FindProductsBySearchStringAsync(searchString);
 
             return response;
         }

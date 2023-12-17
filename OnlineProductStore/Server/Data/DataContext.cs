@@ -35,7 +35,7 @@ namespace OnlineProductStore.Server.Data
                     new Product()
                     {
                         Id = 1,
-                        Title = "Помидори",
+                        Title = "Помидори Гнилі",
                         Description = "Дуже свіжі",
                         Price = 20,
                         ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
@@ -44,7 +44,7 @@ namespace OnlineProductStore.Server.Data
                     new Product()
                     {
                         Id = 2,
-                        Title = "Огірочічки",
+                        Title = "Огірочічки незнаю",
                         Description = "Смачно капець",
                         Price = 60,
                         ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",
@@ -53,8 +53,8 @@ namespace OnlineProductStore.Server.Data
                     new Product()
                     {
                         Id = 3,
-                        Title = "Помидори",
-                        Description = "Дуже свіжі",
+                        Title = "Помидори Смачні",
+                        Description = "не Дуже свіжі",
                         Price = 20,
                         ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
                         CategoryId = 2,
@@ -62,7 +62,7 @@ namespace OnlineProductStore.Server.Data
                     new Product()
                     {
                         Id = 4,
-                        Title = "Огірочічки",
+                        Title = "Огірочічки Короткі",
                         Description = "Смачно капець",
                         Price = 60,
                         ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",
@@ -71,7 +71,7 @@ namespace OnlineProductStore.Server.Data
                      new Product()
                      {
                          Id = 5,
-                         Title = "Помидори",
+                         Title = "Помидори Дивні",
                          Description = "Дуже свіжі",
                          Price = 20,
                          ImageUrl = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRemk0pOj3avWb06RvabQarkPJ-BUaZPIT9UjLWrwM6xL8TyRbj",
@@ -80,7 +80,7 @@ namespace OnlineProductStore.Server.Data
                     new Product()
                     {
                         Id = 6,
-                        Title = "Огірочічки",
+                        Title = "Огірочічки Довгі",
                         Description = "Смачно капець",
                         Price = 60,
                         ImageUrl = "https://www.fruit-market.com.ua/wp-content/uploads/2020/04/kornishon.jpg",

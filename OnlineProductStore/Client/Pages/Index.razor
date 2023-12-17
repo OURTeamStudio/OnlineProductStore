@@ -1,5 +1,6 @@
 ﻿@page "/"
 @page "/{categoryUrl}"
+@page "/search/{searchString}"
 
 @inject IProductService _productService
 
@@ -10,9 +11,16 @@
 @code {
     [Parameter]
     public string? CategoryUrl { get; set; } = null;
+    [Parameter]
+    public string? SearchString { get; set; } = null;
 
     protected override async Task OnParametersSetAsync()
     {
-        await _productService.GetProducts(CategoryUrl);
+        if(SearchString != null)
+        {
+            await _productService.SearchProducts(SearchString);
+        }
+        else
+            await _productService.GetProducts(CategoryUrl);
     }
 }
