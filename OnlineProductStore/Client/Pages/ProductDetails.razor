@@ -1,8 +1,9 @@
 ﻿@page "/product/{id:int}"
 
 @inject IProductService _productService
+@inject ICartService _cartService
 
-@if(_product == null)
+@if (_product == null)
 {
     <span>@_message</span>
 }
@@ -10,12 +11,18 @@ else
 {
     <div class="media">
         <div class="media-img-wrapper mr-2">
-            <img class="media-img" src="@_product.ImageUrl" alt="@_product.Title"/>
+            <img class="media-img" src="@_product.ImageUrl" alt="@_product.Title" />
         </div>
         <div class="media-body">
             <h2 class="mb-0">@_product.Title</h2>
             <p>@_product.Description</p>
             <h4 class="price">$@_product.Price</h4>
+            <div class="card-footer bg-white">
+                <button class="btn btn-outline-danger btn-sm" @onclick="AddToCart">
+                    <i class="oi oi-cart fs-5"></i>
+                    Add to cart
+                </button>
+            </div>
         </div>
     </div>
 }
@@ -33,13 +40,26 @@ else
 
         var result = await _productService.GetProductById(Id);
 
-        if(!result.Success)
+        if (!result.Success)
         {
             _message = result.Message;
         }
         else
         {
             _product = result.Data;
+        }
+    }
+
+    private async Task AddToCart()
+    {
+        if (_product != null)
+        {
+            var cartItem = new CartItem()
+                {
+                    ProductId = _product.Id
+                };
+
+            await _cartService.AddToCart(cartItem);
         }
     }
 }

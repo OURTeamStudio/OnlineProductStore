@@ -2,12 +2,13 @@
 @inject IProductService _productService
 
 <div class="input-group">
+
     <input @bind-value="_searchString"
            @bind-value:event="oninput"
            type="search"
            list="products"
            @onkeyup="HandleSearch"
-           class="form-control"
+           class="form-control me-2"
            placeholder="Search..."
            @ref="_searchInput" />
 
@@ -19,10 +20,11 @@
     </datalist>
 
     <div class="input-group-append">
-        <button class="btn btn-primary" @onclick="SearchProducts">
+        <button class="btn btn-outline-success" @onclick="SearchProducts">
             <span class="oi oi-magnifying-glass"></span>
         </button>
     </div>
+
 </div>
 
 @code {
