@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineProductStore.Server.Services.OrderService;
+using OnlineProductStore.Shared.DTO;
 
 namespace OnlineProductStore.Server.Controllers
 {
@@ -16,9 +17,16 @@ namespace OnlineProductStore.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<bool>>> GetOrders()
+        public async Task<ActionResult<ServiceResponse<bool>>> PlaceOrders()
         {
             var result = await _orderService.PlaceOrder();
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<List<OrderViewDTO>>>> GetOrders()
+        {
+            var result = await _orderService.GetOrders();
             return Ok(result);
         }
     }
