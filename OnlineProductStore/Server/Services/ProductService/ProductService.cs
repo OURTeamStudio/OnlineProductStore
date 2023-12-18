@@ -17,7 +17,7 @@ namespace OnlineProductStore.Server.Services.ProductService
         {
             var response = new ServiceResponse<List<Product>>()
             {
-                Data = await _dataContext.Products.ToListAsync()
+                Data = await _dataContext.Products.Where(p => !p.Deleted && p.Visible).ToListAsync()
             };
 
             return response;
@@ -27,7 +27,7 @@ namespace OnlineProductStore.Server.Services.ProductService
         {
             var response = new ServiceResponse<Product>();
 
-            var product = await _dataContext.Products.FindAsync(id);
+            var product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == id && !p.Deleted && p.Visible);
 
             if (product == null)
             {
@@ -56,7 +56,8 @@ namespace OnlineProductStore.Server.Services.ProductService
         private async Task<List<Product>> FindProductsBySearchStringAsync(string searchString)
         {
             return await _dataContext.Products.Where(p => p.Title.ToLower().Contains(searchString.ToLower()) ||
-                                                               p.Description.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                                                               p.Description.ToLower().Contains(searchString.ToLower()) &&
+                                                               !p.Deleted && p.Visible).ToListAsync();
         }
 
         public async Task<ServiceResponse<List<string>>> GetSearchSuggestions(string searchString)
@@ -83,6 +84,70 @@ namespace OnlineProductStore.Server.Services.ProductService
             response.Data = await FindProductsBySearchStringAsync(searchString);
 
             return response;
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetAdminProducts()
+        {
+            var response = new ServiceResponse<List<Product>>()
+            {
+                Data = await _dataContext.Products.Where(p => !p.Deleted).ToListAsync(),
+            };
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<Product>> CreateProduct(Product product)
+        {
+            _dataContext.Products.Add(product);
+
+            await _dataContext.SaveChangesAsync();
+
+            return new ServiceResponse<Product>() { Data = product };
+        }
+
+        public async Task<ServiceResponse<Product>> UpdateProduct(Product product)
+        {
+            var productToUpdate = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == product.Id && !p.Deleted);
+
+            if(productToUpdate == null)
+            {
+                return new ServiceResponse<Product>()
+                {
+                    Success = false,
+                    Message = $"Product with id({product.Id}) is not exists!"
+                };
+            }
+
+            productToUpdate.Title = product.Title;
+            productToUpdate.Description = product.Description;
+            productToUpdate.CategoryId = product.CategoryId;
+            productToUpdate.ImageUrl = product.ImageUrl;
+            productToUpdate.Price = product.Price;
+            productToUpdate.Visible = product.Visible;
+
+            await _dataContext.SaveChangesAsync();
+
+            return new ServiceResponse<Product>() { Data =  product };
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteProduct(int productId)
+        {
+            var productToDelete = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
+
+            if(productToDelete == null)
+            {
+                return new ServiceResponse<bool>()
+                {
+                    Data = false,
+                    Success = false,
+                    Message = $"Product with id({productId}) is not exists!"
+                };
+            }
+
+            productToDelete.Deleted = true;
+            await _dataContext.SaveChangesAsync();
+
+            return new ServiceResponse<bool>() { Data = true };
         }
     }
 }

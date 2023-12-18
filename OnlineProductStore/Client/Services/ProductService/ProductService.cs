@@ -8,6 +8,7 @@ namespace OnlineProductStore.Client.Services.ProductService
 
         public List<Product> Products { get; set; } = new List<Product>();
         public string Message { get; set; }
+        public List<Product> AdminProducts { get; set; }
 
         private readonly HttpClient _httpClient;
 
@@ -56,6 +57,16 @@ namespace OnlineProductStore.Client.Services.ProductService
                 suggestions = result.Data;
 
             return suggestions;
+        }
+
+        public async Task GetAdminProducts()
+        {
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/admin");
+
+            AdminProducts = result.Data;
+
+            if (AdminProducts.Count == 0)
+                Message = "Products not found";
         }
     }
 }
