@@ -32,10 +32,10 @@ namespace OnlineProductStore.Server.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("admin"), Authorize(Roles = "Admin")]
+        [HttpDelete("admin/{categoryId}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<List<Category>>>> DeleteCategory(int categoryId)
         {
-            var result = await _categoryService.GetAdminCategories();
+            var result = await _categoryService.DeleteCategory(categoryId);
 
             return Ok(result);
         }
