@@ -1,0 +1,55 @@
+﻿@page "/login"
+
+@inject IAuthService _authService
+@inject ILocalStorageService _localStorage
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authStateProvider
+
+<PageTitle>Login</PageTitle>
+
+<h3>Login</h3>
+
+<EditForm Model="_user" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="_user.Email" class="form-control" />
+        <ValidationMessage For="@(() => _user.Email)" />
+    </div>
+    <div class="mb-3">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="_user.Password" class="form-control" type="password" />
+        <ValidationMessage For="@(() => _user.Password)" />
+    </div>
+    <div class="text-danger">
+        <span>@_messageAboutSuccess</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+
+
+@code {
+    private UserLoginDTO _user = new UserLoginDTO();
+
+    private string _messageAboutSuccess = string.Empty;
+    private string _messageCssClassColor = string.Empty;
+
+    private async Task HandleLogin()
+    {
+        var result = await _authService.Login(_user);
+
+        if (result.Success)
+        {
+            await _localStorage.SetItemAsStringAsync("jwt-token", result.Data);
+            await _authStateProvider.GetAuthenticationStateAsync();
+            _navigationManager.NavigateTo("");
+        }
+        else
+        {
+            _messageAboutSuccess = result.Message;
+        }
+    }
+
+}

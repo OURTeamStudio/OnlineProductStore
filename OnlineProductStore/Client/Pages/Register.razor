@@ -1,5 +1,7 @@
 ﻿@page "/register"
 
+@inject IAuthService _authService
+
 <PageTitle>Register</PageTitle>
 
 <h3>Register</h3>
@@ -22,14 +24,30 @@
         <ValidationMessage For="@(() => _user.ConfirmPassword)" />
     </div>
    <button type="submit" class="btn btn-primary">Register</button>
+    <div class="@_messageCssClassColor">
+       <span>@_messageAboutSuccess</span>
+   </div>
 </EditForm>
 
 @code {
     private UserRegisterDTO _user = new UserRegisterDTO();
 
-    private void HandleRegistration()
+    private string _messageAboutSuccess = string.Empty;
+    private string _messageCssClassColor = string.Empty;
+
+    private async Task HandleRegistration()
     {
-        
+        var result = await _authService.Register(_user);
+        _messageAboutSuccess = result.Message;
+
+        if(result.Success)
+        {
+            _messageCssClassColor = "text-success";
+        }
+        else
+        {
+            _messageCssClassColor = "text-danger";
+        }
     }
 
 }

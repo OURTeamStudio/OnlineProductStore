@@ -29,5 +29,16 @@ namespace OnlineProductStore.Server.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ServiceResponse<int>>> Login(UserLoginDTO userLoginDTO)
+        {
+            var response = await _authService.Login(userLoginDTO.Email, userLoginDTO.Password);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
     }
 }

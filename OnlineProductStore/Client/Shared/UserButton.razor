@@ -1,13 +1,26 @@
-﻿<div class="dropdown">
+﻿@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider _authStateProvider
+@inject NavigationManager _navigationManager
+
+<div class="dropdown">
     <button @onclick="OpenCloseUserMenu"
             @onfocusout="HideUserMenu"
             class="btn btn-secondary dropdown-toggle user-button">
             <i class="oi oi-person"></i>
     </button>
     <div class="dropdown-menu dropdown-menu-right @UserMenuStateCssClass">
-        <a href="register" class="dropdown-item">Register</a>
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="Logout" >Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                <a href="login?returnUrl=@_navigationManager.ToBaseRelativePath(_navigationManager.Uri)" class="dropdown-item">Login</a>
+                <a href="register" class="dropdown-item">Register</a>
+            </NotAuthorized>
+        </AuthorizeView> 
     </div>
 </div>
+
 @code {
     private bool _isMenuOpened = false;
 
@@ -23,5 +36,12 @@
         await Task.Delay(200);
 
         _isMenuOpened = false;
+    }
+
+    private async Task Logout()
+    {
+        await _localStorage.RemoveItemAsync("jwt-token");
+        await _authStateProvider.GetAuthenticationStateAsync();
+        _navigationManager.NavigateTo("");
     }
 }
