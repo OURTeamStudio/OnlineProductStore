@@ -1,7 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using OnlineProductStore.Shared;
 using OnlineProductStore.Shared.DTO;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace OnlineProductStore.Client.Services.CartService
 {
@@ -24,34 +26,34 @@ namespace OnlineProductStore.Client.Services.CartService
 
         public async Task AddToCart(CartItem item)
         {
-            if(await IsUserAuthenticated())
+            if (await IsUserAuthenticated())
             {
-                Console.WriteLine("User is authenticated");
+                await _httpClient.PostAsJsonAsync("api/cart/add", item);
             }
             else
             {
-                Console.WriteLine("User is not authenticated");
+                var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cart == null)
+                {
+                    cart = new List<CartItem>();
+                }
+
+                var sameItem = cart.Find(x => x.ProductId == item.ProductId);
+                if (sameItem == null)
+                {
+                    cart.Add(item);
+                }
+                else
+                {
+                    sameItem.Quantity += item.Quantity;
+                }
+
+                await _localStorage.SetItemAsync("cart", cart);
             }
-
-            var cart = await GetAllCartItemsAsync();
-
-            var sameItem = cart.Find(i => i.ProductId == item.ProductId);
-
-            if (sameItem != null)
-            {
-                sameItem.Quantity += item.Quantity;
-            }
-            else
-            {
-                cart.Add(item);
-            }
-
-            await _localStorage.SetItemAsync("cart", cart);
-
             await GetCartItemsCount();
         }
 
-        public async Task<List<CartItem>> GetAllCartItemsAsync()
+        public async Task<List<CartItem>> GetCartItemsFromLocalStorageAsync()
         {
             await GetCartItemsCount();
 
@@ -67,52 +69,82 @@ namespace OnlineProductStore.Client.Services.CartService
 
         public async Task<List<CartProductDTO>> GetCartProductsAsync()
         {
-            var cartItems = await GetAllCartItemsAsync();
+            if (await IsUserAuthenticated())
+            {
+                var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<CartProductDTO>>>("api/cart");
+                return response.Data;
+            }
+            else
+            {
+                var cartItems = await GetCartItemsFromLocalStorageAsync();
 
-            var response = await _httpClient.PostAsJsonAsync("api/cart/products", cartItems);
+                if (cartItems.Count == 0)
+                    return new List<CartProductDTO>();
 
-            var cartProducts = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductDTO>>>();
+                var response = await _httpClient.PostAsJsonAsync("api/cart/products", cartItems);
 
-            return cartProducts.Data;
+                var cartProducts = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductDTO>>>();
+
+                return cartProducts.Data;
+            }
         }
 
         public async Task RemoveProducFromCart(int productId)
         {
-            var cartItems = await GetAllCartItemsAsync();
-
-            if (cartItems.Count == 0)
-                return;
-
-            var itemToRemove = cartItems.Find(c => c.ProductId == productId);
-
-            if (itemToRemove != null)
+            if (await IsUserAuthenticated())
             {
-                cartItems.Remove(itemToRemove);
-                await _localStorage.SetItemAsync("cart", cartItems);
-                await GetCartItemsCount();
+                await _httpClient.DeleteAsync($"api/cart/{productId}");
+            }
+            else
+            {
+                var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cart == null)
+                {
+                    return;
+                }
+
+                var cartItem = cart.Find(x => x.ProductId == productId);
+                if (cartItem != null)
+                {
+                    cart.Remove(cartItem);
+                    await _localStorage.SetItemAsync("cart", cart);
+                }
             }
         }
 
         public async Task UpdateQuantity(CartProductDTO cartProductDTO)
         {
-            var cart = await GetAllCartItemsAsync();
-
-            if (cart.Count == 0)
-                return;
-
-            var sameItem = cart.Find(i => i.ProductId == cartProductDTO.ProductId);
-
-            if (sameItem != null)
+            if(await IsUserAuthenticated())
             {
-                sameItem.Quantity = cartProductDTO.Quantity;
-                await _localStorage.SetItemAsync("cart", cart);
-                ItemsChanged?.Invoke();
-            }  
+                var request = new CartItem()
+                {
+                    ProductId = cartProductDTO.ProductId,
+                    Quantity = cartProductDTO.Quantity,
+                };
+
+                await _httpClient.PutAsJsonAsync("api/cart/update-quantity", request);
+            }
+            else
+            {
+                var cart = await GetCartItemsFromLocalStorageAsync();
+
+                if (cart.Count == 0)
+                    return;
+
+                var sameItem = cart.Find(i => i.ProductId == cartProductDTO.ProductId);
+
+                if (sameItem != null)
+                {
+                    sameItem.Quantity = cartProductDTO.Quantity;
+                    await _localStorage.SetItemAsync("cart", cart);
+                    ItemsChanged?.Invoke();
+                }
+            }   
         }
 
         public async Task StoreCartItems(bool emptyLocalCart = false)
         {
-            var localCart = await GetAllCartItemsAsync();
+            var localCart = await GetCartItemsFromLocalStorageAsync();
 
             if (localCart.Count == 0)
                 return;
@@ -143,5 +175,7 @@ namespace OnlineProductStore.Client.Services.CartService
 
             ItemsChanged?.Invoke();
         }
+
+
     }
 }

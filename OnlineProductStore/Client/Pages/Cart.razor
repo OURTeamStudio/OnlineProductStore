@@ -56,16 +56,16 @@ else
 
     private async Task UpdateCart()
     {
-        if ((await _cartService.GetAllCartItemsAsync()).Count == 0)
+        await _cartService.GetCartItemsCount();
+        _products = await _cartService.GetCartProductsAsync();
+
+        if (_products == null || _products.Count == 0)
         {
             _message = "Cart is empty :(";
             _products = new List<CartProductDTO>();
         }
-        else
-        {
-            _products = await _cartService.GetCartProductsAsync();
-        }
     }
+
 
     private async Task OnChangeQuantity(ChangeEventArgs e, CartProductDTO product)
     {

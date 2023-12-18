@@ -38,5 +38,29 @@ namespace OnlineProductStore.Server.Controllers
         {
             return await _cartService.GetCartItemsCount();
         }
+
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<List<CartProductDTO>>>> GetDbCartItems()
+        {
+            return Ok(await _cartService.GetDbCartProducts());
+        }
+
+        [HttpPost("add")]
+        public async Task<ActionResult<ServiceResponse<bool>>> AddProductToDatabase(CartItem cartItem)
+        {
+            return Ok(await _cartService.AddToCart(cartItem));
+        }
+
+        [HttpPut("update-quantity")]
+        public async Task<ActionResult<ServiceResponse<bool>>> UpdateQuantity(CartItem cartItem)
+        {
+            return await _cartService.UpdateQuantity(cartItem);
+        }
+
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult<ServiceResponse<bool>>> RemoveCartItem(int productId)
+        {
+            return Ok(await _cartService.RemoveItemFromCart(productId));
+        }
     }
 }
