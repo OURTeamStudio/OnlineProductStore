@@ -30,7 +30,7 @@ namespace OnlineProductStore.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IProducService, ProductService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -46,6 +46,8 @@ namespace OnlineProductStore.Server
                         ValidateAudience = false,
                     };
                 });
+
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 

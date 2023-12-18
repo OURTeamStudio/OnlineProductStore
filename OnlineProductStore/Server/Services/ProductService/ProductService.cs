@@ -4,13 +4,15 @@ using OnlineProductStore.Shared;
 
 namespace OnlineProductStore.Server.Services.ProductService
 {
-    public class ProductService : IProducService
+    public class ProductService : IProductService
     {
         private readonly DataContext _dataContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProductService(DataContext dataContext)
+        public ProductService(DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
             _dataContext = dataContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<Product>>> GetAllProductsAsync()
@@ -27,12 +29,20 @@ namespace OnlineProductStore.Server.Services.ProductService
         {
             var response = new ServiceResponse<Product>();
 
-            var product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == id && !p.Deleted && p.Visible);
+            Product product = null;
+            if (_httpContextAccessor.HttpContext.User.IsInRole("Admin"))
+            {
+                product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == id && !p.Deleted);
+            }
+            else
+            {
+                product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == id && !p.Deleted && p.Visible);
+            }
 
             if (product == null)
             {
                 response.Success = false;
-                response.Message = $"Product does not exist :(";
+                response.Message = $"Product with id({id}) does not exist :(";
             }
             else
             {
@@ -46,7 +56,7 @@ namespace OnlineProductStore.Server.Services.ProductService
         {
             var response = new ServiceResponse<List<Product>>();
 
-            var products = await _dataContext.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower())).ToListAsync();
+            var products = await _dataContext.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower()) && p.Visible).ToListAsync();
 
             response.Data = products;
 
@@ -68,13 +78,13 @@ namespace OnlineProductStore.Server.Services.ProductService
 
             foreach (var product in products)
             {
-                if(product.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                if (product.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                 {
                     suggestions.Add(product.Title);
                 }
             }
 
-            return new ServiceResponse<List<string>>() { Data = suggestions};
+            return new ServiceResponse<List<string>>() { Data = suggestions };
         }
 
         public async Task<ServiceResponse<List<Product>>> SearchProducts(string searchString)
@@ -109,7 +119,7 @@ namespace OnlineProductStore.Server.Services.ProductService
         {
             var productToUpdate = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == product.Id && !p.Deleted);
 
-            if(productToUpdate == null)
+            if (productToUpdate == null)
             {
                 return new ServiceResponse<Product>()
                 {
@@ -127,14 +137,14 @@ namespace OnlineProductStore.Server.Services.ProductService
 
             await _dataContext.SaveChangesAsync();
 
-            return new ServiceResponse<Product>() { Data =  product };
+            return new ServiceResponse<Product>() { Data = product };
         }
 
         public async Task<ServiceResponse<bool>> DeleteProduct(int productId)
         {
             var productToDelete = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
 
-            if(productToDelete == null)
+            if (productToDelete == null)
             {
                 return new ServiceResponse<bool>()
                 {

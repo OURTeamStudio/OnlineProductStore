@@ -1,6 +1,5 @@
-﻿
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.RenderTree;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using OnlineProductStore.Shared.DTO;
 using System.Net.Http.Json;
 
@@ -10,17 +9,28 @@ namespace OnlineProductStore.Client.Services.CartService
     {
         private readonly ILocalStorageService _localStorage;
         private readonly HttpClient _httpClient;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
         public event Action? ItemsChanged;
 
-        public CartService(ILocalStorageService localStorageService, HttpClient httpClient)
+        public CartService(ILocalStorageService localStorageService, HttpClient httpClient, AuthenticationStateProvider authStateProvider)
         {
             _localStorage = localStorageService;
             _httpClient = httpClient;
+            _authStateProvider = authStateProvider;
         }
 
         public async Task AddToCart(CartItem item)
         {
+            if((await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated)
+            {
+                Console.WriteLine("User is authenticated");
+            }
+            else
+            {
+                Console.WriteLine("User is not authenticated");
+            }
+
             var cart = await GetAllCartItemsAsync();
 
             var sameItem = cart.Find(i => i.ProductId == item.ProductId);
@@ -94,6 +104,21 @@ namespace OnlineProductStore.Client.Services.CartService
                 await _localStorage.SetItemAsync("cart", cart);
                 ItemsChanged?.Invoke();
             }  
+        }
+
+        public async Task StoreCartItems(bool emptyLocalCart = false)
+        {
+            var localCart = await GetAllCartItemsAsync();
+
+            if (localCart.Count == 0)
+                return;
+
+            await _httpClient.PostAsJsonAsync("api/cart", localCart);
+
+            if(emptyLocalCart)
+            {
+                await _localStorage.RemoveItemAsync("cart");
+            }
         }
     }
 }

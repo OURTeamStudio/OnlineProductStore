@@ -4,6 +4,7 @@
 @inject ILocalStorageService _localStorage
 @inject NavigationManager _navigationManager
 @inject AuthenticationStateProvider _authStateProvider
+@inject ICartService _cartService
 
 <PageTitle>Login</PageTitle>
 
@@ -56,6 +57,7 @@
         {
             await _localStorage.SetItemAsStringAsync("jwt-token", result.Data);
             await _authStateProvider.GetAuthenticationStateAsync();
+            await _cartService.StoreCartItems(true);
             _navigationManager.NavigateTo(_returnUrl);
         }
         else

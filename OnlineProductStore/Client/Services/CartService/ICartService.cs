@@ -11,6 +11,6 @@ namespace OnlineProductStore.Client.Services.CartService
         Task<List<CartProductDTO>> GetCartProductsAsync();
         Task RemoveProducFromCart(int productId);
         Task UpdateQuantity(CartProductDTO cartProductDTO);
-
+        Task StoreCartItems(bool emptyLocalCart = false);
     }
 }

@@ -68,5 +68,26 @@ namespace OnlineProductStore.Client.Services.ProductService
             if (AdminProducts.Count == 0)
                 Message = "Products not found";
         }
+
+        public async Task<Product> CreateProduct(Product product)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/product", product);
+
+            var createdProduct = (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+
+            return createdProduct;
+        }
+
+        public async Task<Product> UpdateProduct(Product product)
+        {
+            var result = await _httpClient.PutAsJsonAsync("api/product", product);
+
+            return (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+        }
+
+        public async Task DeleteProduct(Product product)
+        {
+            var result = await _httpClient.PostAsJsonAsync($"api/product/{product.Id}", product);
+        }
     }
 }
