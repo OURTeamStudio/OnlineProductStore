@@ -1,9 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using OnlineProductStore.Shared;
 using OnlineProductStore.Shared.DTO;
 using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
 namespace OnlineProductStore.Client.Services.CartService
 {

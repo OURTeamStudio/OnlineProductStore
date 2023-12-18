@@ -8,6 +8,7 @@ using OnlineProductStore.Server.Services.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Unicode;
+using OnlineProductStore.Server.Services.OrderService;
 
 namespace OnlineProductStore.Server
 {
@@ -34,6 +35,7 @@ namespace OnlineProductStore.Server
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

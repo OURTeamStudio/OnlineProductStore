@@ -7,6 +7,7 @@ using OnlineProductStore.Client;
 using OnlineProductStore.Client.Services.AuthService;
 using OnlineProductStore.Client.Services.CartService;
 using OnlineProductStore.Client.Services.CategodyService;
+using OnlineProductStore.Client.Services.OrderService;
 using OnlineProductStore.Client.Services.ProductService;
 
 namespace OnlineProductStore.Client
@@ -25,6 +26,7 @@ namespace OnlineProductStore.Client
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, ClientAuthStateProvider>();
