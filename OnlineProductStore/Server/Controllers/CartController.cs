@@ -28,10 +28,15 @@ namespace OnlineProductStore.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<CartProductDTO>>>> StoreCartItems(List<CartItem> cartItems)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var products = await _cartService.StoreCartItems(cartItems, userId);
+            var products = await _cartService.StoreCartItems(cartItems);
 
             return Ok(products);
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<ServiceResponse<int>>> GetCartItemsCount()
+        {
+            return await _cartService.GetCartItemsCount();
         }
     }
 }

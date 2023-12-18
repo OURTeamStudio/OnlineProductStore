@@ -6,7 +6,7 @@ namespace OnlineProductStore.Server.Services.CartService
     {
         Task<ServiceResponse<List<CartProductDTO>>> GetCartProducts(List<CartItem> cartItems);
         Task<ServiceResponse<List<CartProductDTO>>> AddCartProducts(List<CartItem> cartItems);
-        Task<ServiceResponse<List<CartProductDTO>>> StoreCartItems(List<CartItem> cartItems, int userId);
-
+        Task<ServiceResponse<List<CartProductDTO>>> StoreCartItems(List<CartItem> cartItems);
+        Task<ServiceResponse<int>> GetCartItemsCount();
     }
 }

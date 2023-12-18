@@ -1,6 +1,7 @@
 ﻿@inject ILocalStorageService _localStorage
 @inject AuthenticationStateProvider _authStateProvider
 @inject NavigationManager _navigationManager
+@inject ICartService _cartService;
 
 <div class="dropdown">
     <button @onclick="OpenCloseUserMenu"
@@ -45,6 +46,7 @@
     private async Task Logout()
     {
         await _localStorage.RemoveItemAsync("jwt-token");
+        await _cartService.GetCartItemsCount();
         await _authStateProvider.GetAuthenticationStateAsync();
         _navigationManager.NavigateTo("");
     }

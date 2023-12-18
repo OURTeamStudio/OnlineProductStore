@@ -58,6 +58,7 @@
             await _localStorage.SetItemAsStringAsync("jwt-token", result.Data);
             await _authStateProvider.GetAuthenticationStateAsync();
             await _cartService.StoreCartItems(true);
+            await _cartService.GetCartItemsCount();
             _navigationManager.NavigateTo(_returnUrl);
         }
         else
