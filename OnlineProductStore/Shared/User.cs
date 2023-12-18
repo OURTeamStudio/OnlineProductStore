@@ -13,5 +13,7 @@ namespace OnlineProductStore.Shared
         public byte[] PasswordHash { get; set; } = new byte[32];
         public byte[] PasswordSalt { get; set; } = new byte[32];
         public DateTime DateCreated { get; set; } = DateTime.Now;
+
+        public string Role { get; set; } = "Customer";
     }
 }
