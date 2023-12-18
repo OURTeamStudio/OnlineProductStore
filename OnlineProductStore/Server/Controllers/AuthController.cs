@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineProductStore.Server.Services.AuthService;
 using OnlineProductStore.Shared.DTO;
+using System.Security.Claims;
 
 namespace OnlineProductStore.Server.Controllers
 {
@@ -34,6 +36,19 @@ namespace OnlineProductStore.Server.Controllers
         public async Task<ActionResult<ServiceResponse<int>>> Login(UserLoginDTO userLoginDTO)
         {
             var response = await _authService.Login(userLoginDTO.Email, userLoginDTO.Password);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("change-password"), Authorize]
+        public async Task<ActionResult<ServiceResponse<bool>>> ChangePassword([FromBody] string newPassword)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var response = await _authService.ChangePassword(Convert.ToInt32(userId), newPassword);
 
             if (!response.Success)
                 return BadRequest(response);

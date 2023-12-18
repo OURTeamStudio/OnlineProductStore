@@ -36,6 +36,18 @@
     private string _messageAboutSuccess = string.Empty;
     private string _messageCssClassColor = string.Empty;
 
+    private string _returnUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+
+        if(QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            _returnUrl = url;
+        }
+    }
+
     private async Task HandleLogin()
     {
         var result = await _authService.Login(_user);
@@ -44,7 +56,7 @@
         {
             await _localStorage.SetItemAsStringAsync("jwt-token", result.Data);
             await _authStateProvider.GetAuthenticationStateAsync();
-            _navigationManager.NavigateTo("");
+            _navigationManager.NavigateTo(_returnUrl);
         }
         else
         {

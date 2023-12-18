@@ -5,6 +5,9 @@ using OnlineProductStore.Server.Services.ProductService;
 using OnlineProductStore.Server.Services.CategoryService;
 using OnlineProductStore.Server.Services.CartService;
 using OnlineProductStore.Server.Services.AuthService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.Unicode;
 
 namespace OnlineProductStore.Server
 {
@@ -31,6 +34,18 @@ namespace OnlineProductStore.Server
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters() 
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
 
             var app = builder.Build();
 
@@ -57,6 +72,8 @@ namespace OnlineProductStore.Server
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorPages();
             app.MapControllers();

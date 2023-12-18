@@ -12,6 +12,13 @@ namespace OnlineProductStore.Client.Services.AuthService
             _httpClient = httpClient;
         }
 
+        public async Task<ServiceResponse<bool>> ChangePassword(ChangeUserPasswordDTO changeUserPasswordDTO)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/auth/change-password", changeUserPasswordDTO.Password);
+
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
         public async Task<ServiceResponse<string>> Login(UserLoginDTO userLoginDTO)
         {
             var result = await _httpClient.PostAsJsonAsync("api/auth/login", userLoginDTO);
