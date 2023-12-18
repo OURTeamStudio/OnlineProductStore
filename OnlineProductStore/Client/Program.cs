@@ -3,6 +3,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OnlineProductStore.Client;
+using OnlineProductStore.Client.Services.AuthService;
 using OnlineProductStore.Client.Services.CartService;
 using OnlineProductStore.Client.Services.CategodyService;
 using OnlineProductStore.Client.Services.ProductService;
@@ -22,6 +23,7 @@ namespace OnlineProductStore.Client
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             await builder.Build().RunAsync();
         }

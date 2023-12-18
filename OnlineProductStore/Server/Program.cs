@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineProductStore.Server.Services.ProductService;
 using OnlineProductStore.Server.Services.CategoryService;
 using OnlineProductStore.Server.Services.CartService;
+using OnlineProductStore.Server.Services.AuthService;
 
 namespace OnlineProductStore.Server
 {
@@ -29,6 +30,7 @@ namespace OnlineProductStore.Server
             builder.Services.AddScoped<IProducService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             var app = builder.Build();
 
