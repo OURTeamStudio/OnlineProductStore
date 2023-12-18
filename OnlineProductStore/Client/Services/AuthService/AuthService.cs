@@ -1,4 +1,5 @@
-﻿using OnlineProductStore.Shared.DTO;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using OnlineProductStore.Shared.DTO;
 using System.Net.Http.Json;
 
 namespace OnlineProductStore.Client.Services.AuthService
@@ -6,10 +7,17 @@ namespace OnlineProductStore.Client.Services.AuthService
     public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
-        public AuthService(HttpClient httpClient)
+        public AuthService(HttpClient httpClient, AuthenticationStateProvider authStateProvider)
         {
             _httpClient = httpClient;
+            _authStateProvider = authStateProvider;
+        }
+
+        public async Task<bool> IsUserAuthenticated()
+        {
+            return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
         }
 
         public async Task<ServiceResponse<bool>> ChangePassword(ChangeUserPasswordDTO changeUserPasswordDTO)

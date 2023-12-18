@@ -11,6 +11,7 @@ namespace OnlineProductStore.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*
             #region create categories
             modelBuilder.Entity<Category>().HasData(
                 new Category()
@@ -88,6 +89,7 @@ namespace OnlineProductStore.Server.Data
                     }
                 );
             #endregion
+            */
         }
 
         public DbSet<Product> Products { get; set; }
@@ -96,5 +98,6 @@ namespace OnlineProductStore.Server.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Address> Addresses { get; set; }
     }
 }

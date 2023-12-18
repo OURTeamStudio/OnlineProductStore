@@ -1,4 +1,5 @@
 ﻿@inject IProductService _productService
+@inject ICartService _cartService
 
 @implements IDisposable
 
@@ -27,7 +28,7 @@ else
                         </div>
                     </a>
                     <div class="card-footer bg-white">
-                        <button class="btn btn-outline-danger btn-sm">
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => AddToCart(product)">
                             <i class="oi oi-cart fs-5"></i>
                             Add to cart
                         </button>
@@ -64,6 +65,7 @@ else
 </ul> *@
 
 @code {
+
     protected override void OnInitialized()
     {
         _productService.ProductsChanged += StateHasChanged;
@@ -72,5 +74,18 @@ else
     public void Dispose()
     {
         _productService.ProductsChanged -= StateHasChanged;
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        if (product != null)
+        {
+            var cartItem = new CartItem()
+                {
+                    ProductId = product.Id
+                };
+
+            await _cartService.AddToCart(cartItem);
+        }
     }
 }

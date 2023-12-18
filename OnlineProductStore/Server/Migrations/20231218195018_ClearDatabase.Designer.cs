@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineProductStore.Server.Data;
 
@@ -11,9 +12,11 @@ using OnlineProductStore.Server.Data;
 namespace OnlineProductStore.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231218195018_ClearDatabase")]
+    partial class ClearDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,10 +66,7 @@ namespace OnlineProductStore.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Addresses");
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("OnlineProductStore.Shared.CartItem", b =>
@@ -216,6 +216,9 @@ namespace OnlineProductStore.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -237,16 +240,9 @@ namespace OnlineProductStore.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
+                    b.HasIndex("AddressId");
 
-            modelBuilder.Entity("OnlineProductStore.Shared.Address", b =>
-                {
-                    b.HasOne("OnlineProductStore.Shared.User", null)
-                        .WithOne("Address")
-                        .HasForeignKey("OnlineProductStore.Shared.Address", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("OnlineProductStore.Shared.OrderItem", b =>
@@ -279,15 +275,20 @@ namespace OnlineProductStore.Server.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("OnlineProductStore.Shared.User", b =>
+                {
+                    b.HasOne("OnlineProductStore.Shared.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("OnlineProductStore.Shared.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("OnlineProductStore.Shared.User", b =>
-                {
-                    b.Navigation("Address")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
