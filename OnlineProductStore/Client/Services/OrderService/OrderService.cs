@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using OnlineProductStore.Shared.DTO;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace OnlineProductStore.Client.Services.OrderService
 {
@@ -35,16 +36,16 @@ namespace OnlineProductStore.Client.Services.OrderService
             }
         }
 
-        //public async Task<OrderViewDTO> GetOrderDetails(int orderId)
-        //{
-        //    return;
-        //}
+        public async Task<OrderDetailsDTO> GetOrderDetails(int orderId)
+        {
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<OrderDetailsDTO>>($"api/order/{orderId}");
+            return result.Data;
+        }
 
         public async Task<List<OrderViewDTO>> GetOrders()
         {
             var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<OrderViewDTO>>>("api/order");
             return result.Data;
         }
-
     }
 }

@@ -2,6 +2,7 @@
 
 @inject ICartService _cartService
 @inject IOrderService _orderService
+@inject IAuthService _authService
 @inject NavigationManager _navigationManager
 
 <PageTitle>Shopping cart</PageTitle>
@@ -39,14 +40,7 @@ else
         </div>
     </div>
 
-    @if (_isAuthenticated)
-    {
-        <div>
-            <h5>Delivery Address</h5>
-            <AddressForm />
-        </div>
-    }
-    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
+    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Buy</button>
 }
 
 @code {

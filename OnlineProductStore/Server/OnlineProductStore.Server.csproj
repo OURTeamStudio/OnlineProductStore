@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Shared\OnlineProductStore.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\AddressService\" />
+  </ItemGroup>
+
 </Project>

@@ -6,5 +6,7 @@ namespace OnlineProductStore.Server.Services.OrderService
     {
         Task<ServiceResponse<bool>> PlaceOrder();
         Task<ServiceResponse<List<OrderViewDTO>>> GetOrders();
+        Task<ServiceResponse<OrderDetailsDTO>> GetOrderDetails(int orderId);
+
     }
 }

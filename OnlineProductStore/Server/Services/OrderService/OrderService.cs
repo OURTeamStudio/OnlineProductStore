@@ -18,6 +18,46 @@ namespace OnlineProductStore.Server.Services.OrderService
             _authService = authService;
         }
 
+        public async Task<ServiceResponse<OrderDetailsDTO>> GetOrderDetails(int orderId)
+        {
+            var response = new ServiceResponse<OrderDetailsDTO>();
+            var order = await _dataContext.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.OrderItems)
+                .Where(o => o.UserId == _authService.GetUserId() && o.Id == orderId)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+
+            if (order == null)
+            {
+                response.Success = false;
+                response.Message = "Order not found.";
+                return response;
+            }
+
+            var orderDetailsResponse = new OrderDetailsDTO
+            {
+                OrderDate = order.OrderDate,
+                TotalPrice = order.TotalPrice,
+                Products = new List<OrderItemDetailsDTO>()
+            };
+
+            order.OrderItems.ForEach(item =>
+            orderDetailsResponse.Products.Add(new OrderItemDetailsDTO
+            {
+                ProductId = item.ProductId,
+                ImageUrl = item.Product.ImageUrl,
+                Quantity = item.Quantity,
+                Title = item.Product.Title,
+                TotalPrice = item.TotalPrice
+            }));
+
+            response.Data = orderDetailsResponse;
+
+            return response;
+        }
+
         public async Task<ServiceResponse<List<OrderViewDTO>>> GetOrders()
         {
             var response = new ServiceResponse<List<OrderViewDTO>>();
